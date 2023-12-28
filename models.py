@@ -168,6 +168,24 @@ class User(db.Model):
                 return user
 
         return False
+    
+    @classmethod
+    def editProfile(cls, user, form):
+        '''
+        Edits user information
+
+        This is a class method that can take a user's info and edit it based on form data.
+        takes the form data and for each input, it checks to see if it was left empty, 
+        if it was empty it wont change anything in the db.
+        '''
+
+        user.username = form.username.data if bool(form.username.data) else user.username
+        user.email = form.email.data if bool(form.email.data) else user.email
+        user.image_url = form.image_url.data if bool(form.image_url.data) else user.image_url
+        user.header_image_url = form.header_image_url.data if bool(form.header_image_url.data) else user.header_image_url
+        user.bio = form.bio.data if bool(form.bio.data) else user.bio
+
+        db.session.commit()
 
 
 class Message(db.Model):

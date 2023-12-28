@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, flash, redirect, session, g
 from sqlalchemy.exc import IntegrityError
-from forms import UserAddForm, LoginForm, MessageForm
+from forms import UserAddForm, LoginForm, MessageForm, UserEditForm
 from models import db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
@@ -107,7 +107,7 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-    
+
     do_logout()
     flash('Successful Logout', 'info')
     return redirect('/login')
@@ -206,8 +206,31 @@ def stop_following(follow_id):
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
+    form = UserEditForm(obj=g.user)
 
-    # IMPLEMENT THIS
+    if request.method == 'POST' and form.validate():
+        # authenticate using the global username and the entered password
+        user = User.authenticate(g.user.username,
+                                 form.password.data)
+        
+        # If the password is correct try to update user data to db
+        if user:
+            try:
+                User.editProfile(g.user, form)
+                return redirect(f'/users/{g.user.id}')
+            
+            except IntegrityError:
+                flash("Username already taken", 'danger')
+                return redirect('/users/profile')
+        else:
+            flash('Password incorrect', 'danger')
+            return redirect('/users/profile')
+            
+    return render_template('users/edit.html', form=form, user=g.user)
 
 
 @app.route('/users/delete', methods=["POST"])
