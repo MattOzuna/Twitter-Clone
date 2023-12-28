@@ -62,7 +62,7 @@ def signup():
 
     form = UserAddForm()
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         try:
             user = User.signup(
                 username=form.username.data,
@@ -90,7 +90,7 @@ def login():
 
     form = LoginForm()
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         user = User.authenticate(form.username.data,
                                  form.password.data)
 
@@ -107,9 +107,9 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-
-    # IMPLEMENT THIS
-
+    do_logout()
+    flash('Successful Logout', 'info')
+    return redirect('/login')
 
 ##############################################################################
 # General user routes:
@@ -241,7 +241,7 @@ def messages_add():
 
     form = MessageForm()
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         msg = Message(text=form.text.data)
         g.user.messages.append(msg)
         db.session.commit()
