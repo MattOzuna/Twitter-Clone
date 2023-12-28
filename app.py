@@ -311,8 +311,16 @@ def homepage():
     """
 
     if g.user:
+        # get follow users ids
+        followed_users = [user.id for user in g.user.following]
+
+        # add your own id
+        followed_users.append(g.user.id)
+        
+        # search for your and followed users messages
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(followed_users))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
