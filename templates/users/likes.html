@@ -17,20 +17,6 @@
                 <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
                 <p>{{ message.text }}</p>
                 </div>
-                <!-- will want to implement AJAX for this commented out section because it redirects to the home page -->
-                <!-- <form method="POST" action="/users/add_like/{{ message.id }}" id="messages-form">
-                    <button class="
-                      btn 
-                      btn-sm
-                      {% if g.user.likes.count(message) == 1 %}
-                        btn-primary
-                      {% else %} 
-                        btn-secondary
-                      {% endif %}"
-                    >
-                      <i class="fa fa-thumbs-up"></i> 
-                    </button>
-                  </form> -->
             </li>
 
             

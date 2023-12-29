@@ -191,7 +191,7 @@ class User(db.Model):
     @classmethod
     def toggleLike(cls, user, msg_id):
         '''user likes a post'''
-        msg = Message.query.filter_by(id = msg_id).first()
+        msg = Message.query.filter_by(id = msg_id).one_or_404()
 
         if user.likes.count(msg) == 1:
             # unlike

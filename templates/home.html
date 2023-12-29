@@ -57,7 +57,7 @@
               <button class="
                 btn 
                 btn-sm
-                {% if g.user.likes.count(msg) == 1 %}
+                {% if g.user.likes.__contains__(msg) == 1 %}
                   btn-primary
                 {% else %} 
                   btn-secondary
