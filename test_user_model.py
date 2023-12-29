@@ -38,8 +38,10 @@ class UserModelTestCase(TestCase):
             User.query.delete()
             Message.query.delete()
             Follows.query.delete()
+            db.session.commit()
 
             self.client = app.test_client()
+            
 
     def test_user_model(self):
         """Does basic model work?"""
