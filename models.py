@@ -188,6 +188,25 @@ class User(db.Model):
         db.session.commit()
 
 
+    @classmethod
+    def toggleLike(cls, user, msg_id):
+        '''user likes a post'''
+        msg = Message.query.filter_by(id = msg_id).first()
+
+        if user.likes.count(msg) == 1:
+            # unlike
+            user.likes.remove(msg)
+            db.session.commit()
+            return False
+
+        else:
+            # like
+            user.likes.append(msg)
+            db.session.commit()
+            return True
+        
+
+
 class Message(db.Model):
     """An individual message ("warble")."""
 

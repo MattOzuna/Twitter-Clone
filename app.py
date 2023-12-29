@@ -249,6 +249,18 @@ def delete_user():
     return redirect("/signup")
 
 
+@app.route('/users/add_like/<int:msg_id>', methods=['POST'])
+def add_like(msg_id):
+    '''add a like to a message'''
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
+    
+    status = User.toggleLike(g.user, msg_id)
+    return redirect('/')
+
+
 ##############################################################################
 # Messages routes:
 
