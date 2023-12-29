@@ -257,8 +257,19 @@ def add_like(msg_id):
         return redirect("/")
     
     
-    status = User.toggleLike(g.user, msg_id)
+    User.toggleLike(g.user, msg_id)
     return redirect('/')
+
+
+@app.route('/users/<int:user_id>/likes')
+def show_likes(user_id):
+    '''show liked messages'''
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    return render_template('users/likes.html', user=user)
 
 
 ##############################################################################
@@ -336,7 +347,6 @@ def homepage():
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-
         return render_template('home.html', messages=messages)
 
     else:

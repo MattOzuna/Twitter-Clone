@@ -196,14 +196,13 @@ class User(db.Model):
         if user.likes.count(msg) == 1:
             # unlike
             user.likes.remove(msg)
-            db.session.commit()
-            return False
 
         else:
             # like
             user.likes.append(msg)
-            db.session.commit()
-            return True
+
+        db.session.commit()
+
         
 
 
