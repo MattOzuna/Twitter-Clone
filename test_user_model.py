@@ -30,7 +30,7 @@ with app.app_context():
 
 
 class UserModelTestCase(TestCase):
-    """Test views for messages."""
+    """Test views for User."""
 
     def setUp(self):
         """Create test client, add sample data."""
@@ -59,3 +59,20 @@ class UserModelTestCase(TestCase):
             # User should have no messages & no followers
             self.assertEqual(len(u.messages), 0)
             self.assertEqual(len(u.followers), 0)
+
+
+    def test_user_repr(self):
+        '''does the repr work'''
+        with app.app_context():            
+            u = User(
+                email="test@test.com",
+                username="testuser",
+                password="HASHED_PASSWORD"
+            )
+
+            db.session.add(u)
+            db.session.commit()
+
+
+
+    
