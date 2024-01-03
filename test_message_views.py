@@ -52,6 +52,7 @@ class MessageViewTestCase(TestCase):
                                         image_url=None)
             
             db.session.commit()
+            
             self.id = testuser.id
             
 
