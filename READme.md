@@ -37,8 +37,6 @@ The follows table has 2 foreign keys because a row is created with two different
 7. researched and understood login strategy  
 - How is the logged in user being kept track of?  
 It is being tracked throught the flask global object called g.
-<br/>
-
 - What is Flask’s ***g*** object?  
 The g object is flask global object which can be accessed in requests
 - What is the purpose of ***add_user_to_g ?***  
