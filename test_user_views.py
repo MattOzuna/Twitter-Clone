@@ -8,6 +8,7 @@
 import os
 from unittest import TestCase
 from models import db, connect_db, Message, User, Likes, Follows
+from forms import UserEditForm
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -47,6 +48,7 @@ class UserViewTestCase(TestCase):
                                         email="test2@test.com",
                                         password="testuser",
                                         image_url=None)
+            
             testuser3 = User.signup(username="Marty",
                                         email="test3@test.com",
                                         password="testuser",
@@ -159,7 +161,29 @@ class UserViewTestCase(TestCase):
 
             self.assertEqual(response.status_code, 200)
             self.assertIn("Access unauthorized", html)
+    
+    def test_user_edit_profile(self):
+        '''Does edit profile class method work'''
+        with app.test_client() as client:
 
+            with app.app_context():
+                
+                form = UserEditForm(data={"username": "Ricky",
+                                    "email": "Ricky@test.com",
+                                    "image_url": "",
+                                    "header_img_url": "",
+                                    "bio": "This is a Test"
+                                    })
+                
+                user1 = User.query.filter_by(id=self.id1).one()
+
+                User.editProfile(user1, form)
+
+                user1 = User.query.filter_by(id=self.id1).one()
+
+                self.assertEqual(user1.username, "Ricky")
+                self.assertEqual(user1.email, "Ricky@test.com")
+                self.assertEqual(user1.bio, "This is a Test")
 
 
     

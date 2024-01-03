@@ -211,7 +211,6 @@ def profile():
         return redirect("/")
     
     form = UserEditForm(obj=g.user)
-
     if request.method == 'POST' and form.validate():
         # authenticate using the global username and the entered password
         user = User.authenticate(g.user.username,

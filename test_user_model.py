@@ -9,7 +9,6 @@ import os
 from unittest import TestCase
 from sqlalchemy import exc
 from models import db, User, Message, Follows
-
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
 # before we import our app, since that will have already
@@ -198,6 +197,13 @@ class UserModelTestCase(TestCase):
         '''Does authenitacte class method work with wrong username'''
         with app.app_context():
             self.assertFalse(User.authenticate('fake_user1', 'HASHED_PASSWORD2'))
+
+
+
+
+
+
+
 
 
 
