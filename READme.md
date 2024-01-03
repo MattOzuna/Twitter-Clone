@@ -4,7 +4,7 @@ This exercise is intended to extend a somewhat-functioning Twitter clone. It was
 
 ## Setup
 
-To get this application running, make sure you do the following in the Terminal while in /playlist-app:
+To get this application running, make sure you do the following in the Terminal:
 
 1. `python3 -m venv venv`
 2. `source venv/bin/activate`
