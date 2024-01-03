@@ -39,6 +39,9 @@ class MessageViewTestCase(TestCase):
         """Create test client, add sample data."""
 
         with app.app_context():
+            db.drop_all()
+            db.create_all()
+
             User.query.delete()
             Message.query.delete()
 
@@ -86,6 +89,27 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(msg.text, "Hello")
 
     
+    def test_add_message_no_session(self):
+        with app.test_client() as client:
+            response = client.post("/messages/new", data={"text": "Hello"}, follow_redirects=True)
+            html = response.get_data(as_text=True)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Access unauthorized", html)
+
+
+    def test_add_message_invalid_user(self):
+        with app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = 2222222
+
+            response = client.post("/messages/new", data={"text": "Hello"}, follow_redirects=True)
+            html = response.get_data(as_text=True)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Access unauthorized", html)
+
+    
     def test_get_message(self):
         with app.test_client() as client:
 
@@ -103,6 +127,14 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn('<p class="single-message">Big Test</p>', html)
 
+    def test_get_invalid_message(self):
+        with app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.id
+            
+            resp = client.get('/messages/2222222')
+        
+            self.assertEqual(resp.status_code, 404)
 
     def test_delete_message(self):
         with app.test_client() as client:
@@ -126,6 +158,34 @@ class MessageViewTestCase(TestCase):
         
             self.assertEqual(len(msg), 0)
 
+    def test_delete_message_unauthorized(self):
+        with app.app_context():
+            fake_user = User.signup(username="bad-actor",
+                            email="bad-actor@test.com",
+                            password="password",
+                            image_url=None)
+            
+            message = Message(
+                text="No one but me can delete this message!",
+                user_id=self.id
+            )
+
+            db.session.add_all([fake_user, message])
+            db.session.commit()
+
+            message_id = message.id
+            fake_user_id = fake_user.id
+
+        with app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = fake_user_id
+
+            response = client.post(f"/messages/{message_id}/delete", follow_redirects=True)
+            html = response.get_data(as_text=True)
+
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Access unauthorized", html)
 
 
 
